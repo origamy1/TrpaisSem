@@ -55,6 +55,7 @@ bool Elevator_Thread::Run(){
 
     /* zistenie aktuálnej pozície výťahu a podľa nej rozbehnúť výťah*/
 	find_actual_elevator_position();
+	PT_YIELD();
 	PT_WAIT_UNTIL(isPacketPrepared());
 			atQueues_of_packets->Packets_from_queue.pop_into(working_Packet);
 	pom = true;
@@ -104,7 +105,6 @@ bool Elevator_Thread::Run(){
 
     /* RIADENIE VÝŤAHOVEJ APLIKÁCIE */
 	while(true){
-
 
 		PT_WAIT_UNTIL(isPacketPrepared());
 
@@ -191,6 +191,7 @@ bool Elevator_Thread::Run(){
 						   current_state_id = 0;
 						   motor_stop();
 						   unlock_elevator_door();
+						   //PT_YIELD();
 						   elevator_is_moving = false;
 						   turn_off_led_diod(0x10);
 						   turn_off_led_diod(0x20);
@@ -285,10 +286,14 @@ bool Elevator_Thread::Run(){
 			       break;
 
 				   case 0xDF:
-				    {
+				   {
+
+				   }
+
+
 				  	 // uint8_t buf[45] = "POZOR VÝŤAH JE NA KONCI\n";
 				  	 // send_information_to_d0_terminal(information);
-				  	}
+
 				   break;
 
 				   /* Dáta prijaté z terminálu*/
@@ -582,3 +587,9 @@ const etl::array<Elevator_Thread::state, 5> Elevator_Thread::stateTable={
 				&Elevator_Thread::OnExit_Floor_4)
 
 };
+
+
+
+
+
+

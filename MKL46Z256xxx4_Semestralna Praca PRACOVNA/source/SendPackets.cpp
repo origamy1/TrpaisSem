@@ -22,6 +22,17 @@ bool SendPackets::Run(){
 						if (ch == 0xA0 || ch == 0xA1) {
 							//if (ch == 0xA1) printftf("\n odoslal sa acknowledge\n");
 							sendPacket(&working_Packet);
+							b= 0;
+							swtimer.startTimer(6);
+							do{
+						    b++;
+							sendPacketSend();
+							PT_WAIT_UNTIL(Was_Ack_delivered() || swtimer.isExpired() );
+
+							}while(swtimer.isExpired() && (b < 8));
+					        //if(newAckFlag == 1)
+					        	//bool pom = 1;
+
 						}
 
 			}

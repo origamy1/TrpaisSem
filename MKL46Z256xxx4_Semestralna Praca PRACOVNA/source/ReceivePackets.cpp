@@ -39,10 +39,10 @@ bool ReceivePackets::Run(){
 					/* ak dorazilo potvrdenie acknowledge*/
 						case 0xA1:
 
-							if(is_CRC_alright(&working_packet)){
+							//if(is_CRC_alright(&working_packet)){
 								newAckFlag = true;
 								last_ack_from = working_packet.ch_adr_sender;
-							}
+							//}
 							break;
 						default:
 

@@ -63,6 +63,15 @@ if (newDataFlag>0) {
 	return false;
 }
 
+bool UartThread::Was_Ack_delivered(){
+	if (newAckFlag) {
+		newAckFlag = false;
+		return true;
+	} else{
+		return false;
+	}
+}
+
 void UartThread::set_atributess_of_packet(uint8_t paA0_A1,uint8_t adr_rec, uint8_t adr_send, uint8_t lenght, uint8_t CRC, uint8_t* data){
 	packet pom;
 	pom.ch_adr_receiver = adr_rec;

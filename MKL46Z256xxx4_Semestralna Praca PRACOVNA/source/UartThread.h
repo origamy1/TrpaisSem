@@ -39,16 +39,17 @@ void prepare_ack_packet_for_send(uint8_t receiver);
 void send_Reset_watchDog();
 void find_actual_elevator_position();
 private:
-	SwTimer swtimer;
+
 	uint8_t * ack_packet_data;
 
 protected:
+	SwTimer swtimer;
 	int i;
     uint8_t	CRC_Count;
 	uint8_t packet_received_to;
     bool areNewDataReady();
     bool areDataToSend();
-
+    bool Was_Ack_delivered();
 	 packet working_packet;
 	 packet working_ack_packet;
 
