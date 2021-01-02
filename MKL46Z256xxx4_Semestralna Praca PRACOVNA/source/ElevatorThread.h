@@ -61,6 +61,7 @@ public:
 		 where_to_Go[0] = 1;
 
 		 if(elevator_is_moving == false){
+			 elevator_is_moving = true;
 			 lock_elevator_door();
 			 Elevator_settings(0, 85);
 
@@ -92,6 +93,7 @@ public:
 		where_to_Go[1] = 1;
 
 		 if(elevator_is_moving == false){
+			 elevator_is_moving = true;
 			 lock_elevator_door();
 			 if(not_Moving_coordinates < 250){
 				Elevator_settings(1, 85);
@@ -122,6 +124,7 @@ public:
 	    where_to_Go[2] = 1;
 
 	    if(elevator_is_moving == false){
+	    	elevator_is_moving = true;
 	   		if(not_Moving_coordinates < 500){
 	   			Elevator_settings(1, 85);
 	   			uint8_t pom[2] = "2";
@@ -150,6 +153,7 @@ public:
      	where_to_Go[3] = 1;
 
      	if(elevator_is_moving == false){
+     		elevator_is_moving = true;
      		 lock_elevator_door();
      		if(not_Moving_coordinates < 750){
      		 	Elevator_settings(1, 85);
@@ -179,6 +183,7 @@ public:
 
 
 		if(elevator_is_moving == false){
+			elevator_is_moving = true;
 			 lock_elevator_door();
 			 Elevator_settings(1, 85);
 			 uint8_t pom[2] = "4";
@@ -234,6 +239,12 @@ public:
 	}
 
 private:
+
+	void goToFloorP();
+	void goToFloor1();
+	void goToFloor2();
+	void goToFloor3();
+	void goToFloor4();
 	volatile bool where_to_Go[5] = {0}; // pole povelov od tlačidiel (kde treba ešte ísť)
 		volatile uint8_t turned_senzor;
 	    bool guard;

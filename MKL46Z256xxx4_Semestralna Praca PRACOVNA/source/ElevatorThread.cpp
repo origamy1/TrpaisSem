@@ -358,70 +358,157 @@ bool Elevator_Thread::Run(){
 						   else if (Speed_of_Motor == 0){
 							   elevator_is_moving = false;
 						   if(elevator_is_moving == false){
+
+						   if(not_Moving_coordinates>700){	   }
+
 							   set_information_where_to_go_to_terminal();
-							   if((where_to_Go[0] == 1) || (where_to_Go[1] == 1)){
-								   if(not_Moving_coordinates > 310){
-									   lock_elevator_door();
-									   Elevator_settings(0, 85);
 
+							   uint8_t floor = 0;
 
-									   break;
-								   } else {
-									   lock_elevator_door();
-									   Elevator_settings(1, 85);
-									   break;
-								   }
+							   if(not_Moving_coordinates < 200){
+								   floor = 0 ;
+							   }else if(not_Moving_coordinates < 400){
+								   floor = 1 ;
+							   }else if(not_Moving_coordinates < 600){
+								   floor = 2 ;
+							   }else if(not_Moving_coordinates < 800){
+								   floor = 3 ;
+							   }else{
+								   floor = 4 ;
 							   }
 
-							   if((where_to_Go[3] == 1) || (where_to_Go[4] == 1)){
-								   if(not_Moving_coordinates < 750){
-									   lock_elevator_door();
-								  	   Elevator_settings(1, 85);
-								  	   break;
-								   } else {
-									   lock_elevator_door();
-									   Elevator_settings(0, 85);
-									   break;
-								   }
+							   uint8_t bellow = 100,up = 100;
+							   for(int i = 0 ; i < 5; i++){
+								   if(where_to_Go[i] == 1 ){
+									  if(i < floor){
+										  if(i > bellow || bellow == 100)
+										  bellow = i;
+									  }
+									  if(i > floor){
+										  if(i < up)
+										  up = i;
+									  }
+								  }
+						      }
+
+							    if(bellow == 100 || up == 100){
+
+							   if((where_to_Go[0] == 1) ){
+								   goToFloorP();
+								   break;
+							   }
+
+							   if((where_to_Go[1] == 1)){
+								   goToFloor1();
+								   break;
 							   }
 						       if(where_to_Go[2] == 1){
-								   if(not_Moving_coordinates < 500){
-									   lock_elevator_door();
-									   Elevator_settings(1, 85);
-									   break;
+								   goToFloor2();
+								   break;
+							   }
+
+						       if(where_to_Go[3] == 1){
+						    	   goToFloor3();
+						    	   break;
+						       }
+
+						       if(where_to_Go[4] == 1){
+						     	   goToFloor4();
+						     	   break;
+						       }
+							   } else {
+
+								   if((not_Moving_coordinates - (200*bellow+100)) < ((200*up+100) - not_Moving_coordinates) ){
+									floor = bellow ;
 								   }else{
-									   lock_elevator_door();
-									   Elevator_settings(0, 85);
+									floor = up;
+								   }
+
+								   switch(floor){
+								   case 0:
+									   goToFloorP();
+									 break;
+								   case 1:
+									   goToFloor1();
+								  	 break;
+								   case 2:
+									   goToFloor2();
+								  	 break;
+								   case 3:
+									   goToFloor3();
+								  	 break;
+								   case 4:
+									   goToFloor4();
+								  	 break;
+								   default:
 									   break;
 								   }
+
+							   }
+
+
+						   }
 							}
 						   }
-
-
-							}
-						   }
-
 					}
-
-
 				   break;
-
 				   default:
-					   break;
+				   break;
 				}
-
-
-
-
-
 		}
-
 	}
 	PT_END();
-
 }
 
+void Elevator_Thread::goToFloorP(){
+	  if(not_Moving_coordinates > 100){
+		  elevator_is_moving = true;
+	  lock_elevator_door();
+	  Elevator_settings(0, 85);
+	  }
+}
 
+void Elevator_Thread::goToFloor1(){
+
+	 if(not_Moving_coordinates < 200){
+		 elevator_is_moving = true;
+		 lock_elevator_door();
+		 Elevator_settings(1, 85);
+	 } else {
+	 lock_elevator_door();
+	 Elevator_settings(0, 85);
+	 }
+}
+
+void Elevator_Thread::goToFloor2(){
+	if(not_Moving_coordinates < 400){
+		elevator_is_moving = true;
+		lock_elevator_door();
+	    Elevator_settings(1, 85);
+		}else{
+		 lock_elevator_door();
+		Elevator_settings(0, 85);
+	}
+}
+
+void Elevator_Thread::goToFloor3(){
+	 if(not_Moving_coordinates < 600){
+		 elevator_is_moving = true;
+		lock_elevator_door();
+		Elevator_settings(1, 85);
+	 }else{
+		lock_elevator_door();
+		 Elevator_settings(0, 85);
+	 }
+}
+
+void Elevator_Thread::goToFloor4(){
+	elevator_is_moving = true;
+	 if(not_Moving_coordinates < 800){
+		lock_elevator_door();
+		Elevator_settings(1, 85);
+	 }
+}
 
 const etl::array<Elevator_Thread::transition, 20> Elevator_Thread::transitionTable = {
 

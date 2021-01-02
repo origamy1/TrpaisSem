@@ -90,16 +90,15 @@ extern "C" void SysTick_Handler() {
 extern "C" void UART0_IRQHandler() {
 
 	if ((kLPSCI_RxDataRegFullFlag) & LPSCI_GetStatusFlags(UART0)) {
-			newDataFlag ++;
+			newDataFlag = true;
+
 
 			LPSCI_ReadBlocking(UART0, packet_data, 5);
 			if(packet_data[3]>0) // prečítanie navyše dát
-				{//if(packet_data[3]>50)
-					//return;
 				LPSCI_ReadBlocking(UART0,&packet_data[5] , packet_data[3] )	;
-				}
 
-			receivePackets.set_atributess_of_packet( packet_data[0], packet_data[1] ,  packet_data[2], packet_data[3], packet_data[4+packet_data[3]],  &packet_data[4] );
+
+			//receivePackets.set_atributess_of_packet( packet_data[0], packet_data[1] ,  packet_data[2], packet_data[3], packet_data[4+packet_data[3]],  &packet_data[4] );
 
 	}
 }
@@ -163,7 +162,7 @@ int main(void) {
 
 
 
-		/*if (true == pitIsrFlag){
+		if (true == pitIsrFlag){
 			count++;
 			PIT_StopTimer(PIT, kPIT_Chnl_0);
 		    //PRINTF("\r\n Channel No.0 interrupt is occured !");
@@ -174,7 +173,7 @@ int main(void) {
 		    }
 		    pitIsrFlag = false;
 		    PIT_StartTimer(PIT, kPIT_Chnl_0);
-		}*/
+		}
 
 	}
 	return 0;

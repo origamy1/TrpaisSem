@@ -23,13 +23,13 @@ bool SendPackets::Run(){
 							//if (ch == 0xA1) printftf("\n odoslal sa acknowledge\n");
 							sendPacket(&working_Packet);
 							b= 0;
-							swtimer.startTimer(6);
-							do{
-						    b++;
+							//swtimer.startTimer(5);
+							//do{
+						    //b++;
 							sendPacketSend();
-							PT_WAIT_UNTIL(Was_Ack_delivered() || swtimer.isExpired() );
+							//PT_WAIT_UNTIL(Was_Ack_delivered() || swtimer.isExpired() );
 
-							}while(swtimer.isExpired() && (b < 8));
+							//}while(swtimer.isExpired() && (b < 2));
 					        //if(newAckFlag == 1)
 					        	//bool pom = 1;
 

@@ -8,6 +8,7 @@
 #ifndef COMMON_HPP_
 #define COMMON_HPP_
 #include <stdint.h>
+
 uint64_t getRunTimeInMs();
 extern volatile char newChar;
 extern volatile uint8_t newDataFlag;
@@ -17,3 +18,4 @@ extern volatile bool newAckFlag ;
 extern volatile uint8_t data_To_send_count ;
 extern volatile uint8_t last_ack_from;
 #endif /* COMMON_HPP_ */
+extern uint8_t *packet_data;

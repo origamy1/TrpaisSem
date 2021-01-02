@@ -56,8 +56,8 @@ bool UartThread::Run() {
 
 
 bool UartThread::areNewDataReady() {
-if (newDataFlag>0) {
-	newDataFlag --;
+if (newDataFlag) {
+	newDataFlag = false;
 	return true;
 } else
 	return false;
