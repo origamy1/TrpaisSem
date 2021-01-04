@@ -14,11 +14,13 @@ public:
     bool isExpired();
     void startTimer(uint64_t delay);
     void restartTimer();
-
+    uint64_t passedTime();
+    void starCountTime();
 private:
     callback_f GlTimeFn;  //Odkaz na funciu ktora vracia globalny cas
     uint64_t endTime; //Pomocna premnena
     uint64_t _delay; //Perioda casovaca
+    uint64_t startTime; // pomocná premenna
 };
 
 #endif

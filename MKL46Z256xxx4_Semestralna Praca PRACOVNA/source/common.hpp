@@ -19,3 +19,4 @@ extern volatile uint8_t data_To_send_count ;
 extern volatile uint8_t last_ack_from;
 #endif /* COMMON_HPP_ */
 extern uint8_t *packet_data;
+extern bool activateBreak;

@@ -50,6 +50,9 @@
 #include "SendPackets.h"
 #include "fsl_pit.h"
 #include "fsl_gpio.h"
+#include "MMA8451Q.h"
+#define M_PI		3.14159265358979323846
+
 
 #define SYSTICK_MS 10U
 #define SYSTICK_TICKS CLOCK_GetFreq(kCLOCK_CoreSysClk)/(1000/(SYSTICK_MS))
@@ -65,6 +68,11 @@ volatile uint8_t last_ack_from = 0;
 volatile char newChar;
 volatile uint8_t data_To_send_count = 0;
 uint8_t *packet_data =(uint8_t*) malloc(sizeof(uint8_t) * (DATA_MAX_LENGHT +5));
+float gravityX = 0 ;
+float gravityY = 0 ;
+float gravityZ = 0 ;
+float linear_accelerationX,linear_accelerationY,linear_accelerationZ = 0;
+bool activateBreak = false;
 
 
  SwTimer swtimer1(SwTimer::callback_f::create<getRunTimeInMs>());
@@ -103,7 +111,16 @@ extern "C" void UART0_IRQHandler() {
 	}
 }
 
-
+void findAcceleration(float deltaT,float* dataSenzor){
+	 int8_t Fc = 10; // 1 HZ na vyfiltrovanie
+	 float alfa = alfa = (2*M_PI * deltaT * Fc)/(2*M_PI * deltaT * Fc + 1);;
+	 gravityX = (1-alfa) * gravityX + alfa * dataSenzor[0];
+	 gravityY = (1-alfa) * gravityY + alfa * dataSenzor[1];
+	 gravityZ = (1-alfa) * gravityZ + alfa * dataSenzor[2];
+	 linear_accelerationX  = dataSenzor[0] - gravityX;
+	 linear_accelerationY  = dataSenzor[1] - gravityY;
+	 linear_accelerationZ  = dataSenzor[2] - gravityZ;
+}
 
 int main(void) {
 
@@ -152,8 +169,11 @@ int main(void) {
 	printf("ProtoThreads demo\n\r");
 
 
+	MMA8451Q acc(I2C0,0x1D);
+
 	/* Enter an infinite loop, just incrementing a counter. */
 	swtimer1.startTimer(1000);
+	swtimer1.starCountTime();
 	PIT_StartTimer(PIT, kPIT_Chnl_0);
 	while (1) {
 		receivePackets.Run();  // vlakno vyskočí vráti sa
@@ -161,7 +181,7 @@ int main(void) {
 		elevatorThread.Run();
 
 
-
+        /* Pravidelne vysielanie na watchdog a kontrola či výťah nestojí ak hej zisťuje sa či je treba ísť na ďalšie poschodie */
 		if (true == pitIsrFlag){
 			count++;
 			PIT_StopTimer(PIT, kPIT_Chnl_0);
@@ -173,6 +193,27 @@ int main(void) {
 		    }
 		    pitIsrFlag = false;
 		    PIT_StartTimer(PIT, kPIT_Chnl_0);
+		}
+
+		/* Kontrola voľného pádu po 100 ms. Pri voľnom páde za zatiahne ručná brzda*/
+		if((swtimer1.passedTime() > 100) && (activateBreak == false)){
+
+			float pom[3] = {0};
+		    		acc.getAccAllAxis(pom);
+		    		pom[0] = pom[0] / 420;
+		    		pom[1] = pom[1] /420;
+		    		pom[2] = pom[2] / 420; // 9,81 gravitačné zrýchlenie
+		    		uint64_t passTime = swtimer1.passedTime();
+		    		float timeSec = passTime > 0 ? (float)passTime/1000 : 0;
+		    		swtimer1.starCountTime();
+
+		    		findAcceleration(timeSec, pom);
+		    		if(pom[2]  < 2 && pom[2] > -2){ // keď sa gravitačné zrýchlenie odpočíta bude rýchlosť okolo nuly. takto sa zistí voľný pád
+		    			elevatorThread.activate_Emergency_break();
+		    			activateBreak = true;
+		    			PRINTF("\n PADA VÝŤAH zatiahla sa ručná brzda\n");
+		    		}
+
 		}
 
 	}

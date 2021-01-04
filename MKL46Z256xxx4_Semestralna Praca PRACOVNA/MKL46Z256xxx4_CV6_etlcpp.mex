@@ -41,6 +41,11 @@
                         <data>true</data>
                      </feature>
                   </dependency>
+                  <dependency resourceType="Peripheral" resourceId="I2C0" description="Peripheral I2C0 is not initialized" problem_level="1" source="Pins:BOARD_InitPins">
+                     <feature name="initialized" evaluation="equal">
+                        <data>true</data>
+                     </feature>
+                  </dependency>
                   <dependency resourceType="SWComponent" resourceId="platform.drivers.common" description="Pins initialization requires the COMMON Driver in the project." problem_level="2" source="Pins:BOARD_InitPins">
                      <feature name="enabled" evaluation="equal" configuration="core0">
                         <data>true</data>
@@ -79,6 +84,8 @@
                         <pin_feature name="pull_enable" value="enable"/>
                      </pin_features>
                   </pin>
+                  <pin peripheral="I2C0" signal="SCL" pin_num="31" pin_signal="PTE24/TPM0_CH0/I2C0_SCL"/>
+                  <pin peripheral="I2C0" signal="SDA" pin_num="32" pin_signal="PTE25/TPM0_CH1/I2C0_SDA"/>
                </pins>
             </function>
          </functions_list>

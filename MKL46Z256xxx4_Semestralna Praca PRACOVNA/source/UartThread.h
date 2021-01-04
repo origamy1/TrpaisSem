@@ -38,6 +38,7 @@ void send_information_to_d0_terminal(const uint8_t* information);
 void prepare_ack_packet_for_send(uint8_t receiver);
 void send_Reset_watchDog();
 void find_actual_elevator_position();
+void activate_Emergency_break();
 private:
 
 	uint8_t * ack_packet_data;
@@ -71,7 +72,7 @@ protected:
  	 void receive_current_speed_from_ElevatorF1();
 
  	 void deactivate_Emergency_break();
- 	 void activate_Emergency_break();
+
  	 void Reset_watch_dog_timer();
  	 //todo
  	 void print_packet_to_elevator_terminal();

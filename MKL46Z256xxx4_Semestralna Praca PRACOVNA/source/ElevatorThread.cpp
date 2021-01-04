@@ -329,6 +329,10 @@ bool Elevator_Thread::Run(){
 					   case '4':
 						   process_event(Events::GO_TO_FL_4);
 					   	   break;
+					   case 'E':
+					   	   deactivate_Emergency_break();
+					   	   activateBreak = false;
+					   	   break;
 					   default:
 						   break;
 					   }
@@ -465,6 +469,8 @@ void Elevator_Thread::goToFloorP(){
 		  elevator_is_moving = true;
 	  lock_elevator_door();
 	  Elevator_settings(0, 85);
+	   uint8_t pom[2] = "P";
+		set_information_display(0x02,pom);
 	  }
 }
 
@@ -474,9 +480,13 @@ void Elevator_Thread::goToFloor1(){
 		 elevator_is_moving = true;
 		 lock_elevator_door();
 		 Elevator_settings(1, 85);
+		   uint8_t pom[2] = "1";
+				set_information_display(0x01,pom);
 	 } else {
 	 lock_elevator_door();
 	 Elevator_settings(0, 85);
+	 	 uint8_t pom[2] = "1";
+	 		set_information_display(0x02,pom);
 	 }
 }
 
@@ -485,9 +495,13 @@ void Elevator_Thread::goToFloor2(){
 		elevator_is_moving = true;
 		lock_elevator_door();
 	    Elevator_settings(1, 85);
+	    uint8_t pom[2] = "2";
+	    	set_information_display(0x01,pom);
 		}else{
 		 lock_elevator_door();
 		Elevator_settings(0, 85);
+		uint8_t pom[2] = "2";
+			set_information_display(0x02,pom);
 	}
 }
 
@@ -496,9 +510,13 @@ void Elevator_Thread::goToFloor3(){
 		 elevator_is_moving = true;
 		lock_elevator_door();
 		Elevator_settings(1, 85);
+		uint8_t pom[2] = "3";
+			set_information_display(0x01,pom);
 	 }else{
 		lock_elevator_door();
 		 Elevator_settings(0, 85);
+		 uint8_t pom[2] = "3";
+		 	set_information_display(0x02,pom);
 	 }
 }
 
@@ -507,6 +525,8 @@ void Elevator_Thread::goToFloor4(){
 	 if(not_Moving_coordinates < 800){
 		lock_elevator_door();
 		Elevator_settings(1, 85);
+		uint8_t pom[2] = "4";
+			set_information_display(0x01,pom);
 	 }
 }
 
