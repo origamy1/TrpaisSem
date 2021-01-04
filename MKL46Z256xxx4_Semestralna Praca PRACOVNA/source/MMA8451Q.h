@@ -95,14 +95,23 @@ public:
    *
    * @param res array where acceleration data will be stored
    */
+
+
+  //! Ziskanie informácie všetkých troch osí akcelerometra.
+  /*! Parameter je adresa na pole troch floatov kde sa uloźia hodnoty troch osí akcelerometra */
   void getAccAllAxis(float * res);
 
 private:
   unsigned char m_addr;
   I2C_Type * I2CBase;
   i2c_master_config_t masterConfig;
+  //! Čítanie z I2C.
+  /*! Číta z I2C Dáta na adrese addr o dĺžke len */
   void readRegs(int addr, uint8_t * data, int len);
+  //! Zapisovanie do I2C
+  /*! Zapisuje dáta do I2C */
   void writeRegs(uint8_t * data, int len);
+
   int16_t getAccAxis(uint8_t addr);
 
 };

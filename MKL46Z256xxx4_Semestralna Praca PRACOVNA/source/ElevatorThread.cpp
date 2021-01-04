@@ -464,6 +464,7 @@ bool Elevator_Thread::Run(){
 	PT_END();
 }
 
+
 void Elevator_Thread::goToFloorP(){
 	  if(not_Moving_coordinates > 100){
 		  elevator_is_moving = true;

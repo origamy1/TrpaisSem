@@ -10,6 +10,9 @@
 #define DATA_MAX_LENGHT 100
 #include "etl/queue.h"
 
+
+ //! Štruktúra uchovávajúca celý paket.
+ /*! Uchováva štart bajt, bajt adresy prímateľa, bajt adresy odosielateľa, bajt veľkostí dát, potenciálnych 255 bajtov dát, a CRC 8 */
 typedef struct Packet{
 	uint8_t ch_type_A0_A1;
 	uint8_t ch_adr_receiver;
@@ -20,6 +23,11 @@ typedef struct Packet{
 
 }packet;
 
+//! štruktúra Packet_qeue.
+/*! Uchováva queue 20 paketov. Je to zásobník paketov z knižnice Etl.cpp  kde sa uchovávajú vždy pracovné pakety.
+ *  buď tie ktoré sa prijali, alebo tie ktoré sú nachystané na odoslanie. Je možné že to pretečie ak je privela povelov naraz
+ *  Dá sa to ošetriť zväčsením tohoto Qeue. Ale potom je treba dynamicky alokovať pakety.
+ *   */
 typedef struct Packet_queue{
 	etl::queue<packet,20> Packets_from_queue;
 }packet_queue;

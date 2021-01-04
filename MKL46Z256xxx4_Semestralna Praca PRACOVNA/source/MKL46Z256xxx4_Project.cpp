@@ -100,11 +100,9 @@ extern "C" void UART0_IRQHandler() {
 	if ((kLPSCI_RxDataRegFullFlag) & LPSCI_GetStatusFlags(UART0)) {
 			newDataFlag = true;
 
-
 			LPSCI_ReadBlocking(UART0, packet_data, 5);
 			if(packet_data[3]>0) // prečítanie navyše dát
 				LPSCI_ReadBlocking(UART0,&packet_data[5] , packet_data[3] )	;
-
 
 			//receivePackets.set_atributess_of_packet( packet_data[0], packet_data[1] ,  packet_data[2], packet_data[3], packet_data[4+packet_data[3]],  &packet_data[4] );
 

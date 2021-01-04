@@ -110,11 +110,7 @@ uint8_t UartThread::count_CRC_of_packet(const packet* paPacket){
 
 
 
-uint8_t UartThread::which_limit_switch_is_turned_on(){
 
-
-
-}
 
 void UartThread::find_actual_elevator_position(){
 	uint8_t data = 0x03 ; // vyžiadanie 16 bitového čísla
