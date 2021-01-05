@@ -196,8 +196,6 @@ bool Elevator_Thread::Run(){
 						   turn_off_led_diod(0x10);
 						   turn_off_led_diod(0x20);
 						   where_to_Go[0] = 0;
-						   //PT_YIELD();
-						  // set_information_where_to_go_to_terminal();
 						 }
 						   find_actual_elevator_position();
 
@@ -216,8 +214,6 @@ bool Elevator_Thread::Run(){
 						   turn_off_led_diod(0x11);
 						   turn_off_led_diod(0x21);
 						   where_to_Go[1] = 0;
-						   //PT_YIELD();
-						 //  set_information_where_to_go_to_terminal();
 						   find_actual_elevator_position();
 						   break;
 					   }
@@ -235,8 +231,6 @@ bool Elevator_Thread::Run(){
 						   turn_off_led_diod(0x12);
 						   turn_off_led_diod(0x22);
 						   where_to_Go[2] = 0;
-						  // PT_YIELD();
-						   //set_information_where_to_go_to_terminal();
 						   find_actual_elevator_position();
 
 					   }
@@ -253,8 +247,6 @@ bool Elevator_Thread::Run(){
 						   turn_off_led_diod(0x13);
 						   turn_off_led_diod(0x23);
 						   where_to_Go[3] = 0;
-						  // PT_YIELD();
-						  // set_information_where_to_go_to_terminal();
 						   find_actual_elevator_position();
 					   }
 				   break;
@@ -270,8 +262,7 @@ bool Elevator_Thread::Run(){
 						   turn_off_led_diod(0x14);
 						   turn_off_led_diod(0x24);
 						   where_to_Go[4] = 0;
-						  // PT_YIELD();
-						   //set_information_where_to_go_to_terminal();
+
 						   find_actual_elevator_position();
 					   }
 
@@ -289,7 +280,6 @@ bool Elevator_Thread::Run(){
 				   {
 
 				   }
-
 
 				  	 // uint8_t buf[45] = "POZOR VÝŤAH JE NA KONCI\n";
 				  	 // send_information_to_d0_terminal(information);
@@ -340,11 +330,15 @@ bool Elevator_Thread::Run(){
 				   break;
 
 				   case 0xF1:{
-
+					   //! Informácie o stave výťahu.
+					   /*! Ak boli vyžiadané súradnice výťahu*/
 					   if(working_Packet.ch_lenght_of_data == 2) {
 						   not_Moving_coordinates = working_Packet.ch_data[0]+ working_Packet.ch_data[1]*16*16;
 						   receive_current_speed_from_ElevatorF1();
 					   }
+
+					   //! Informácie o rýchlosti motora.
+					   /*! Ak bola vyžiadaná informácia o rýchlosti motora*/
 					   if(working_Packet.ch_lenght_of_data == 4) {
 						   uint8_t buf[4];
 						   buf[0] = working_Packet.ch_data[0];
@@ -361,6 +355,10 @@ bool Elevator_Thread::Run(){
 							   elevator_is_moving = true;
 						   else if (Speed_of_Motor == 0){
 							   elevator_is_moving = false;
+
+							   //! Ak sa motor nehýbe.
+							   /*! Ak sa motor nehýbe kontroluje sa či má nejaké nevyriešené povely od tlačidiel.
+							    *  Ak áno sa rozbehne na správne poschodie*/
 						   if(elevator_is_moving == false){
 
 						   if(not_Moving_coordinates>700){	   }
@@ -381,6 +379,9 @@ bool Elevator_Thread::Run(){
 								   floor = 4 ;
 							   }
 
+
+							   //! Zisťovanie najbližších poschodí.
+							   /*! Zisťuje ktoré najbližšie poschodie je hore nad výťahom a ktoré je dole pod výťahom*/
 							   uint8_t bellow = 100,up = 100;
 							   for(int i = 0 ; i < 5; i++){
 								   if(where_to_Go[i] == 1 ){
@@ -422,6 +423,8 @@ bool Elevator_Thread::Run(){
 						       }
 							   } else {
 
+								   //! Rozhodovanie výťahu kde to má výhodnejšie.
+								   /*! Ak mal ísť výťah aj hore aj dole ide na to bližšie poschodie*/
 								   if((not_Moving_coordinates - (200*bellow+100)) < ((200*up+100) - not_Moving_coordinates) ){
 									floor = bellow ;
 								   }else{
@@ -698,6 +701,172 @@ const etl::array<Elevator_Thread::state, 5> Elevator_Thread::stateTable={
 
 
 
+void Elevator_Thread::set_information_where_to_go_to_terminal(){
+
+	if((where_to_Go[0] == 1 ) || (where_to_Go[1] == 1 ) )
+	{
+			uint8_t information[33] = "\nGo to  _floor: \n Go to _floor: ";
+			information[7] = '0';
+			information[15] = where_to_Go[0] + '0';
+			//information[20] = 0;
+			information[23] = '1';
+			information[31] = where_to_Go[1] + '0';
+			send_information_to_d0_terminal(information);
+	}
+	if((where_to_Go[2] == 1 ) || (where_to_Go[3] == 1 ) )
+	{
+			uint8_t information[33] = "\nGo to  _floor: \n Go to _floor: ";
+			information[7] = '2';
+			information[15] = where_to_Go[2] + '0';
+			information[23] = '3';
+			information[31] = where_to_Go[3] + '0';
+			send_information_to_d0_terminal(information);
+	}
+	if((where_to_Go[4] == 1 ))
+	{       uint8_t information[21] = "\nGo to  _floor: \n";
+			information[7] = '4';
+			information[15] = where_to_Go[4] + '0';
+			send_information_to_d0_terminal(information);
+	}
+}
 
 
+void Elevator_Thread::OnTranTo_Floor_4() {
 
+	PRINTF("%s\n", __func__);
+
+	if(from_inside == false){
+		turn_on_led_diod(0x14);
+	} else {
+		turn_on_led_diod(0x24);
+	}
+	where_to_Go[4] = 1;
+
+
+	if(elevator_is_moving == false){
+		elevator_is_moving = true;
+		 lock_elevator_door();
+		 Elevator_settings(1, 85);
+		 uint8_t pom[2] = "4";
+		 set_information_display(0x01,pom);
+	}else {
+		 find_actual_elevator_position();
+		 printf("\n Výťah sa hýbe neni možno privolať\n");
+	}
+
+}
+
+void Elevator_Thread::OnTranTo_Floor_3() {
+	 //lock_elevator_door();
+	PRINTF("%s\n", __func__);
+
+	if(from_inside == false){
+	    turn_on_led_diod(0x13);
+	} else {
+		turn_on_led_diod(0x23);
+	}
+	where_to_Go[3] = 1;
+
+	if(elevator_is_moving == false){
+		elevator_is_moving = true;
+		 lock_elevator_door();
+		if(not_Moving_coordinates < 750){
+		 	Elevator_settings(1, 85);
+		 	uint8_t pom[2] = "3";
+		 	set_information_display(0x01,pom);
+		}else{
+			Elevator_settings(0, 85);
+			uint8_t pom[2] = "3";
+			set_information_display(0x02,pom);
+		}
+	}else {
+		 find_actual_elevator_position();
+		 printf("\n Výťah sa hýbe neni možno privolať\n");
+	}
+}
+
+
+void Elevator_Thread::OnTranTo_Floor_2(){
+	//lock_elevator_door();
+	PRINTF("%s\n", __func__);
+
+	if(from_inside == false){
+	    turn_on_led_diod(0x12);
+	} else {
+		turn_on_led_diod(0x22);
+	}
+
+    where_to_Go[2] = 1;
+
+    if(elevator_is_moving == false){
+    	elevator_is_moving = true;
+   		if(not_Moving_coordinates < 500){
+   			Elevator_settings(1, 85);
+   			uint8_t pom[2] = "2";
+   			set_information_display(0x01,pom);
+   		}else{
+   			Elevator_settings(0, 85);
+   			uint8_t pom[2] = "2";
+   			set_information_display(0x02,pom);
+   		}
+   	}else {
+		 find_actual_elevator_position();
+		 printf("\n Výťah sa hýbe neni možno privolať\n");
+   	}
+
+}
+
+void Elevator_Thread::OnTranTo_Floor_1() {
+	//lock_elevator_door();
+	PRINTF("%s\n", __func__);
+	if(from_inside == false){
+	    turn_on_led_diod(0x11);
+	} else {
+		turn_on_led_diod(0x21);
+	}
+	where_to_Go[1] = 1;
+
+	 if(elevator_is_moving == false){
+		 elevator_is_moving = true;
+		 lock_elevator_door();
+		 if(not_Moving_coordinates < 250){
+			Elevator_settings(1, 85);
+			uint8_t pom[2] = "1";
+			set_information_display(0x01,pom);
+		 }
+		 else{
+			Elevator_settings(0, 85);
+			uint8_t pom[2] = "1";
+			set_information_display(0x02,pom);
+		 }
+	 }else {
+		 find_actual_elevator_position();
+		 printf("\n Výťah sa hýbe neni možno privolať\n");
+	 }
+
+}
+
+void Elevator_Thread::OnTranTo_Floor_P() {
+
+	 PRINTF("%s\n", __func__);
+	 //lock_elevator_door();
+	 if(from_inside == false){
+		 turn_on_led_diod(0x10);
+	 } else {
+		 turn_on_led_diod(0x20);
+	 }
+	 where_to_Go[0] = 1;
+
+	 if(elevator_is_moving == false){
+		 elevator_is_moving = true;
+		 lock_elevator_door();
+		 Elevator_settings(0, 85);
+
+		   uint8_t pom[2] = "P";
+		   set_information_display(0x02,pom);
+	 }else{
+		 find_actual_elevator_position();
+		 printf("\n Výťah sa hýbe neni možno privolať\n");
+	 }
+
+}

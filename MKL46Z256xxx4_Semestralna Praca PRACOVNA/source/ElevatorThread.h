@@ -62,7 +62,6 @@ public:
 	virtual bool Run();
 
 
-
 	//! Metóda, ktorú volá event stavového automatu GO_TO_FL_P .
 	/*! Rozsvietí sa správna signalizačná dióda výťahu buď vnútorná alebo vonkajšia podľa toho kde bolo stlačené tlačidlo
 	 *  Nastaví sa príznak where_to_Go[0] = 1; že výťah má ísť na nulté poschodie. Podľa tohto príznaku keď výťah stojí to sa zisťuje v
@@ -73,34 +72,7 @@ public:
 	 *
 	 *  Odošle sa tu aj na informačný display táto voľba .
 	 *  */
-	void OnTranTo_Floor_P() {
-
-
-
-		 PRINTF("%s\n", __func__);
-		 //lock_elevator_door();
-		 if(from_inside == false){
-			 turn_on_led_diod(0x10);
-		 } else {
-			 turn_on_led_diod(0x20);
-		 }
-		 where_to_Go[0] = 1;
-
-		 if(elevator_is_moving == false){
-			 elevator_is_moving = true;
-			 lock_elevator_door();
-			 Elevator_settings(0, 85);
-
-			   uint8_t pom[2] = "P";
-			   set_information_display(0x02,pom);
-		 }else{
-			 find_actual_elevator_position();
-			 printf("\n Výťah sa hýbe neni možno privolať\n");
-		 }
-
-
-
-	}
+	void OnTranTo_Floor_P();
 
 
 	//! Metóda, ktorú volá event stavového automatu GO_TO_FL_1 .
@@ -113,35 +85,7 @@ public:
 		 *
 		 *  Odošle sa tu aj na informačný display táto voľba .
 		 *  */
-	void OnTranTo_Floor_1() {
-		//lock_elevator_door();
-		PRINTF("%s\n", __func__);
-		if(from_inside == false){
-		    turn_on_led_diod(0x11);
-		} else {
-			turn_on_led_diod(0x21);
-		}
-		where_to_Go[1] = 1;
-
-		 if(elevator_is_moving == false){
-			 elevator_is_moving = true;
-			 lock_elevator_door();
-			 if(not_Moving_coordinates < 250){
-				Elevator_settings(1, 85);
-				uint8_t pom[2] = "1";
-				set_information_display(0x01,pom);
-			 }
-			 else{
-				Elevator_settings(0, 85);
-				uint8_t pom[2] = "1";
-				set_information_display(0x02,pom);
-			 }
-		 }else {
-			 find_actual_elevator_position();
-			 printf("\n Výťah sa hýbe neni možno privolať\n");
-		 }
-
-	}
+	void OnTranTo_Floor_1();
 
 	//! Metóda, ktorú volá event stavového automatu GO_TO_FL_2 .
 		/*! Rozsvietí sa správna signalizačná dióda výťahu buď vnútorná alebo vonkajšia podľa toho kde bolo stlačené tlačidlo
@@ -153,35 +97,7 @@ public:
 		 *
 		 *  Odošle sa tu aj na informačný display táto voľba .
 		 *  */
-	void OnTranTo_Floor_2() {
-		//lock_elevator_door();
-		PRINTF("%s\n", __func__);
-
-		if(from_inside == false){
-		    turn_on_led_diod(0x12);
-		} else {
-			turn_on_led_diod(0x22);
-		}
-
-	    where_to_Go[2] = 1;
-
-	    if(elevator_is_moving == false){
-	    	elevator_is_moving = true;
-	   		if(not_Moving_coordinates < 500){
-	   			Elevator_settings(1, 85);
-	   			uint8_t pom[2] = "2";
-	   			set_information_display(0x01,pom);
-	   		}else{
-	   			Elevator_settings(0, 85);
-	   			uint8_t pom[2] = "2";
-	   			set_information_display(0x02,pom);
-	   		}
-	   	}else {
-			 find_actual_elevator_position();
-			 printf("\n Výťah sa hýbe neni možno privolať\n");
-	   	}
-
-	}
+	void OnTranTo_Floor_2() ;
 
 	//! Metóda, ktorú volá event stavového automatu GO_TO_FL_3 .
 		/*! Rozsvietí sa správna signalizačná dióda výťahu buď vnútorná alebo vonkajšia podľa toho kde bolo stlačené tlačidlo
@@ -193,34 +109,7 @@ public:
 		 *
 		 *  Odošle sa tu aj na informačný display táto voľba .
 		 *  */
-	void OnTranTo_Floor_3() {
-		 //lock_elevator_door();
-		PRINTF("%s\n", __func__);
-
-		if(from_inside == false){
-		    turn_on_led_diod(0x13);
-		} else {
-			turn_on_led_diod(0x23);
-		}
-     	where_to_Go[3] = 1;
-
-     	if(elevator_is_moving == false){
-     		elevator_is_moving = true;
-     		 lock_elevator_door();
-     		if(not_Moving_coordinates < 750){
-     		 	Elevator_settings(1, 85);
-     		 	uint8_t pom[2] = "3";
-     		 	set_information_display(0x01,pom);
-     		}else{
-     			Elevator_settings(0, 85);
-     			uint8_t pom[2] = "3";
-     			set_information_display(0x02,pom);
-     		}
-     	}else {
-			 find_actual_elevator_position();
-			 printf("\n Výťah sa hýbe neni možno privolať\n");
-     	}
-	}
+	void OnTranTo_Floor_3();
 
 
 	//! Metóda, ktorú volá event stavového automatu GO_TO_FL_4 .
@@ -233,32 +122,7 @@ public:
 		 *
 		 *  Odošle sa tu aj na informačný display táto voľba .
 		 *  */
-	void OnTranTo_Floor_4() {
-
-		PRINTF("%s\n", __func__);
-
-		if(from_inside == false){
-			turn_on_led_diod(0x14);
-		} else {
-			turn_on_led_diod(0x24);
-		}
-		where_to_Go[4] = 1;
-
-
-		if(elevator_is_moving == false){
-			elevator_is_moving = true;
-			 lock_elevator_door();
-			 Elevator_settings(1, 85);
-			 uint8_t pom[2] = "4";
-			 set_information_display(0x01,pom);
-		}else {
-			 find_actual_elevator_position();
-			 printf("\n Výťah sa hýbe neni možno privolať\n");
-		}
-
-	}
-
-
+	void OnTranTo_Floor_4();
 
 	void OnEnter_P_Floor() {
 		PRINTF("%s\n", __func__);
@@ -355,40 +219,11 @@ private:
     //! Zistenie či je paket pripravený.
     /*! Zisťuje sa či je paket pripravený */
 	bool isPacketPrepared();
-
 	bool isAckDone();
-
 
 	  //! Odoslanie informácie ostávajúcich poschodí na terminál výťahu.
 	  /*!   */
-	void set_information_where_to_go_to_terminal(){
-
-		if((where_to_Go[0] == 1 ) || (where_to_Go[1] == 1 ) )
-		{
-				uint8_t information[33] = "\nGo to  _floor: \n Go to _floor: ";
-				information[7] = '0';
-				information[15] = where_to_Go[0] + '0';
-				//information[20] = 0;
-				information[23] = '1';
-				information[31] = where_to_Go[1] + '0';
-				send_information_to_d0_terminal(information);
-		}
-		if((where_to_Go[2] == 1 ) || (where_to_Go[3] == 1 ) )
-		{
-				uint8_t information[33] = "\nGo to  _floor: \n Go to _floor: ";
-				information[7] = '2';
-				information[15] = where_to_Go[2] + '0';
-				information[23] = '3';
-				information[31] = where_to_Go[3] + '0';
-				send_information_to_d0_terminal(information);
-		}
-		if((where_to_Go[4] == 1 ))
-		{       uint8_t information[21] = "\nGo to  _floor: \n";
-				information[7] = '4';
-				information[15] = where_to_Go[4] + '0';
-				send_information_to_d0_terminal(information);
-		}
-	}
+	void set_information_where_to_go_to_terminal();
 
 };
 

@@ -17,10 +17,6 @@
 #define ACK_PACKET_SIZE 5
 #define MAX_INFORMATION_SIZE 250
 
-
-
-
-
 class UartThread: public Protothread {
 public:
 	UartThread(SwTimer::callback_f func):swtimer(func){
@@ -120,7 +116,7 @@ protected:
 	    //! Reset Časovača watch dogu
 	    /*! Po tomto resetovaní sa dá deaktivovať */
  	 void Reset_watch_dog_timer();
- 	 //todo
+
 
 	    //! Funkcia na vypísanie paketu na terminal výťahu
 	    /*! Funkcia na vypísanie paketu na terminal výťahu*/
